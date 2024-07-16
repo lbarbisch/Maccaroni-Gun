@@ -1,18 +1,18 @@
-# Maccaroni-Gun
+# Macaroni-Gun
 A fully 3D printed toy gun that shoots pasta.  
   
 The idea for this came up when I stumbled upon this meme:  
 https://www.reddit.com/r/memes/comments/7cvvh4/pasta_la_vista/
 
-A friend an I took upon the challenge to construct a device that can "shoot" maccaroni pasta.  
+A friend an I took upon the challenge to construct a device that can "shoot" macaroni pasta.  
 
 ## V0
-<img src="Output V0/Maccaroni-Gun.JPG" width="600">
-This is the first version of a maccaroni shooting device.
-It is very bad and the major problem with this, that maccaronis are brittle and this version works by hitting it with a hammer.  
-So the maccaroni shatters and the force isn't transferred well.
+<img src="Output V0/Maccaroni-Gun.JPG" width="600">  
+This is the first version of a macaroni shooting device.
+It is very bad and the major problem with this, that macaronis are brittle and this version works by hitting it with a hammer.  
+So the macaroni shatters and the force isn't transferred well.
 
 ## V1 (work in progress)
-An idea for a second version is using flywheels, similar as in certain NERF guns.
-If these wheels are slightly soft the maccaroni (hopefully) doesn't shatter.
-Also the accelleration would be much higher than with a hammer.
+<img src="Output V1/Maccaroni-Gun.jpg" width="600">  
+This uses two flywheels made from TPU to softly grip the macaroni and accelerate it without shattering it.  
+It and its internals are documented [here](https://barbisch.ch/projects/macaroni-gun/).

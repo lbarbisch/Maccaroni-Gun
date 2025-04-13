@@ -1,0 +1,2 @@
+../Core/Src/application.c:20:6:setup	8	static
+../Core/Src/application.c:31:6:loop	16	static

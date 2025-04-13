@@ -1,0 +1,16 @@
+../Core/Src/motorcontroller.c:33:6:initMotorControl	16	static
+../Core/Src/motorcontroller.c:75:6:update	16	static
+../Core/Src/motorcontroller.c:148:6:updateTorque	32	static
+../Core/Src/motorcontroller.c:100:6:updatePosition	40	static
+../Core/Src/motorcontroller.c:135:6:updateSpeed	24	static
+../Core/Src/motorcontroller.c:80:6:HAL_I2C_MemRxCpltCallback	8	static
+../Core/Src/motorcontroller.c:221:6:enableMotor	8	static
+../Core/Src/motorcontroller.c:227:6:calibrateOffset	24	static
+../Core/Src/motorcontroller.c:255:6:setMode	0	static
+../Core/Src/motorcontroller.c:260:20:getMode	0	static
+../Core/Src/motorcontroller.c:265:9:getPower	0	static
+../Core/Src/motorcontroller.c:270:6:setDirection	0	static
+../Core/Src/motorcontroller.c:275:6:setPowerLimit	0	static
+../Core/Src/motorcontroller.c:280:6:setPower	0	static
+../Core/Src/motorcontroller.c:285:6:setTarget	0	static
+../Core/Src/motorcontroller.c:290:9:getPosition	0	static

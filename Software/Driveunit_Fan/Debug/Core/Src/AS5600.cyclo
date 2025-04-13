@@ -1,0 +1,5 @@
+../Core/Src/AS5600.c:11:6:AS5600_init	1
+../Core/Src/AS5600.c:17:10:AS5600_getAngle	1
+../Core/Src/AS5600.c:24:10:AS5600_getRawAngle	1
+../Core/Src/AS5600.c:31:9:AS5600_getStatus	1
+../Core/Src/AS5600.c:38:10:AS5600_getMagnitude	1

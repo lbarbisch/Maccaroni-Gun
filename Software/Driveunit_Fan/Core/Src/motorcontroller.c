@@ -233,7 +233,6 @@ void enableMotor()
 void calibrateOffset(uint8_t calibration_power)
 {
 	moco.calibration = 1;
-	uint16_t angle = 0;
 	moco.power = calibration_power;
 
 	//while (AS5600_getRawAngle(&hi2c1) > 2048/7)

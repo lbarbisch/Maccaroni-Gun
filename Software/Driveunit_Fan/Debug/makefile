@@ -60,8 +60,8 @@ all: main-build
 main-build: Driveunit_Fan.elf secondary-outputs
 
 # Tool invocations
-Driveunit_Fan.elf Driveunit_Fan.map: $(OBJS) $(USER_OBJS) C:\Users\Lukas\STM32CubeIDE\workspace_1.5.0\Driveunit_Fan\STM32G030F6PX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Driveunit_Fan.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\Users\Lukas\STM32CubeIDE\workspace_1.5.0\Driveunit_Fan\STM32G030F6PX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Driveunit_Fan.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Driveunit_Fan.elf Driveunit_Fan.map: $(OBJS) $(USER_OBJS) Z:\Datastorrage\Projects\Maccaroni-Gun\Software\Driveunit_Fan\STM32G030F6PX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Driveunit_Fan.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"Z:\Datastorrage\Projects\Maccaroni-Gun\Software\Driveunit_Fan\STM32G030F6PX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Driveunit_Fan.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

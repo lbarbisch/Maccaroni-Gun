@@ -67,8 +67,6 @@ void Error_Handler(void);
 #define ADC_I_U_GPIO_Port GPIOA
 #define ADC_I_V_Pin GPIO_PIN_5
 #define ADC_I_V_GPIO_Port GPIOA
-#define ADC_I_W_Pin GPIO_PIN_6
-#define ADC_I_W_GPIO_Port GPIOA
 #define ADC_VIN_Pin GPIO_PIN_7
 #define ADC_VIN_GPIO_Port GPIOA
 #define PWM_U_Pin GPIO_PIN_8

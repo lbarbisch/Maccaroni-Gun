@@ -8,10 +8,6 @@
 #include "application.h"
 #include "motorcontroller.h"
 
-extern ADC_HandleTypeDef hadc1;
-extern UART_HandleTypeDef huart2;
-extern I2C_HandleTypeDef hi2c1;
-
 extern Controller moco;
 extern volatile bool newData;
 
@@ -24,6 +20,8 @@ int32_t targetB = -600;
 
 void setup()
 {
+	HAL_TIM_PWM_Start(&htim16, TIM_CHANNEL_1);
+
 	initMotorControl();
 
 	moco.position = get_meas_angle();

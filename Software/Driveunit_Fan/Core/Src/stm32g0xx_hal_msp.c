@@ -60,7 +60,7 @@ extern DMA_HandleTypeDef hdma_adc1;
 /* USER CODE END 0 */
 
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
-                    /**
+                                        /**
   * Initializes the Global MSP.
   */
 void HAL_MspInit(void)
@@ -102,11 +102,9 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
     PA0     ------> ADC1_IN0
     PA4     ------> ADC1_IN4
     PA5     ------> ADC1_IN5
-    PA6     ------> ADC1_IN6
     PA7     ------> ADC1_IN7
     */
-    GPIO_InitStruct.Pin = ADC_Angle_Pin|ADC_I_U_Pin|ADC_I_V_Pin|ADC_I_W_Pin
-                          |ADC_VIN_Pin;
+    GPIO_InitStruct.Pin = ADC_Angle_Pin|ADC_I_U_Pin|ADC_I_V_Pin|ADC_VIN_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -160,11 +158,9 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc)
     PA0     ------> ADC1_IN0
     PA4     ------> ADC1_IN4
     PA5     ------> ADC1_IN5
-    PA6     ------> ADC1_IN6
     PA7     ------> ADC1_IN7
     */
-    HAL_GPIO_DeInit(GPIOA, ADC_Angle_Pin|ADC_I_U_Pin|ADC_I_V_Pin|ADC_I_W_Pin
-                          |ADC_VIN_Pin);
+    HAL_GPIO_DeInit(GPIOA, ADC_Angle_Pin|ADC_I_U_Pin|ADC_I_V_Pin|ADC_VIN_Pin);
 
     /* ADC1 DMA DeInit */
     HAL_DMA_DeInit(hadc->DMA_Handle);
@@ -279,7 +275,28 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
     /* USER CODE BEGIN TIM1_MspInit 1 */
 
     /* USER CODE END TIM1_MspInit 1 */
+  }
+  else if(htim_base->Instance==TIM16)
+  {
+    /* USER CODE BEGIN TIM16_MspInit 0 */
 
+    /* USER CODE END TIM16_MspInit 0 */
+    /* Peripheral clock enable */
+    __HAL_RCC_TIM16_CLK_ENABLE();
+    /* USER CODE BEGIN TIM16_MspInit 1 */
+
+    /* USER CODE END TIM16_MspInit 1 */
+  }
+  else if(htim_base->Instance==TIM17)
+  {
+    /* USER CODE BEGIN TIM17_MspInit 0 */
+
+    /* USER CODE END TIM17_MspInit 0 */
+    /* Peripheral clock enable */
+    __HAL_RCC_TIM17_CLK_ENABLE();
+    /* USER CODE BEGIN TIM17_MspInit 1 */
+
+    /* USER CODE END TIM17_MspInit 1 */
   }
 
 }
@@ -292,7 +309,6 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim)
     /* USER CODE BEGIN TIM1_MspPostInit 0 */
 
     /* USER CODE END TIM1_MspPostInit 0 */
-
     __HAL_RCC_GPIOA_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
     /**TIM1 GPIO Configuration
@@ -318,6 +334,27 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim)
 
     /* USER CODE END TIM1_MspPostInit 1 */
   }
+  else if(htim->Instance==TIM16)
+  {
+    /* USER CODE BEGIN TIM16_MspPostInit 0 */
+
+    /* USER CODE END TIM16_MspPostInit 0 */
+
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    /**TIM16 GPIO Configuration
+    PA6     ------> TIM16_CH1
+    */
+    GPIO_InitStruct.Pin = GPIO_PIN_6;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF5_TIM16;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    /* USER CODE BEGIN TIM16_MspPostInit 1 */
+
+    /* USER CODE END TIM16_MspPostInit 1 */
+  }
 
 }
 /**
@@ -339,73 +376,27 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
 
     /* USER CODE END TIM1_MspDeInit 1 */
   }
-
-}
-
-/**
-  * @brief UART MSP Initialization
-  * This function configures the hardware resources used in this example
-  * @param huart: UART handle pointer
-  * @retval None
-  */
-void HAL_UART_MspInit(UART_HandleTypeDef* huart)
-{
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-  if(huart->Instance==USART2)
+  else if(htim_base->Instance==TIM16)
   {
-    /* USER CODE BEGIN USART2_MspInit 0 */
+    /* USER CODE BEGIN TIM16_MspDeInit 0 */
 
-    /* USER CODE END USART2_MspInit 0 */
-    /* Peripheral clock enable */
-    __HAL_RCC_USART2_CLK_ENABLE();
-
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-    /**USART2 GPIO Configuration
-    PA1     ------> USART2_DE
-    PA2     ------> USART2_TX
-    PA3     ------> USART2_RX
-    */
-    GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.Alternate = GPIO_AF1_USART2;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-    /* USER CODE BEGIN USART2_MspInit 1 */
-
-    /* USER CODE END USART2_MspInit 1 */
-
-  }
-
-}
-
-/**
-  * @brief UART MSP De-Initialization
-  * This function freeze the hardware resources used in this example
-  * @param huart: UART handle pointer
-  * @retval None
-  */
-void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
-{
-  if(huart->Instance==USART2)
-  {
-    /* USER CODE BEGIN USART2_MspDeInit 0 */
-
-    /* USER CODE END USART2_MspDeInit 0 */
+    /* USER CODE END TIM16_MspDeInit 0 */
     /* Peripheral clock disable */
-    __HAL_RCC_USART2_CLK_DISABLE();
+    __HAL_RCC_TIM16_CLK_DISABLE();
+    /* USER CODE BEGIN TIM16_MspDeInit 1 */
 
-    /**USART2 GPIO Configuration
-    PA1     ------> USART2_DE
-    PA2     ------> USART2_TX
-    PA3     ------> USART2_RX
-    */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3);
+    /* USER CODE END TIM16_MspDeInit 1 */
+  }
+  else if(htim_base->Instance==TIM17)
+  {
+    /* USER CODE BEGIN TIM17_MspDeInit 0 */
 
-    /* USER CODE BEGIN USART2_MspDeInit 1 */
+    /* USER CODE END TIM17_MspDeInit 0 */
+    /* Peripheral clock disable */
+    __HAL_RCC_TIM17_CLK_DISABLE();
+    /* USER CODE BEGIN TIM17_MspDeInit 1 */
 
-    /* USER CODE END USART2_MspDeInit 1 */
+    /* USER CODE END TIM17_MspDeInit 1 */
   }
 
 }

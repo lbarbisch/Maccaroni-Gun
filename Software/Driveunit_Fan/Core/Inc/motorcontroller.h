@@ -27,8 +27,6 @@ typedef struct
 
 	// correction values and constants
 	uint16_t encoder_offset;
-	//const int32_t arm_offset = 160; // linke Motor
-	int32_t arm_offset; // rechte Motor
 	uint16_t angle_cw;
 	uint16_t angle_ccw;
 	uint16_t phase_offset1;
@@ -78,7 +76,8 @@ void setPower(uint8_t _power);
 uint8_t getPower();
 void setPowerLimit(uint8_t _power_limit);
 void setTarget(uint32_t _target);
-int32_t getPosition();
+int32_t get_meas_angle();
 void updateSpeed();
+void setnewData();
 
 #endif /* INC_MOTORCONTROLLER_H_ */

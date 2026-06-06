@@ -13,36 +13,67 @@ extern UART_HandleTypeDef huart2;
 extern I2C_HandleTypeDef hi2c1;
 
 extern Controller moco;
+extern volatile bool newData;
 
 bool oldTriggerState = 1;
-bool stateMachine = 0;
+uint8_t stateMachine = 0;
+
+int32_t targetA = 0;
+int32_t targetB = -600;
+
 
 void setup()
 {
 	initMotorControl();
-	//calibrateOffset(64);
-	setMode(POSITION_MODE);
+
+	moco.position = get_meas_angle();
+	moco.old_angle = moco.position;
+	moco.target = targetA;
+
+	setnewData();
 	update();
+
+	while (moco.position > 1024) moco.position -= 2048;
+	while (moco.position < -1024) moco.position += 2048;
+
+	//setnewData();
+	//update();
 	enableMotor();
+	//calibrateOffset(64);  // broken :/
 }
-
-int32_t travel = 1000;
-
 void loop()
 {
+	// update control loop
 	update();
+
+	// start sequence
 	if (stateMachine == 1)
 	{
-		if (abs(moco.position - travel) < 10)
+		if (abs(moco.position - targetA) < 10)
 		{
-			stateMachine = 0;
-			moco.target = 0;
+			stateMachine = 2;
+			moco.target = targetB;
 		}
 	}
+
+	// start sequence
+	if (stateMachine == 2)
+	{
+		if (abs(moco.position - targetB) < 10)
+		{
+			stateMachine = 0;
+			moco.target = targetA;
+		}
+	}
+
 	if ((oldTriggerState == 1) && (HAL_GPIO_ReadPin(Trigger_GPIO_Port, Trigger_Pin) == 0))
 	{
 		stateMachine = 1;
-		moco.target = travel;
+		moco.target = targetA;
 	}
+
+	// logic to detect falling edge of button
 	oldTriggerState = HAL_GPIO_ReadPin(Trigger_GPIO_Port, Trigger_Pin);
 }
+
+

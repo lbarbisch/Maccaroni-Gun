@@ -1,2 +1,2 @@
-../Core/Src/application.c:20:6:setup	1
-../Core/Src/application.c:31:6:loop	5
+../Core/Src/application.c:25:6:setup	5
+../Core/Src/application.c:44:6:loop	7

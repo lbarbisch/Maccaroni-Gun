@@ -13,6 +13,7 @@ extern ADC_HandleTypeDef hadc1;
 extern I2C_HandleTypeDef hi2c1;
 
 Controller moco;
+volatile bool newData;
 
 static inline uint16_t max(uint16_t value, uint16_t limit)
 {
@@ -45,7 +46,6 @@ void initMotorControl()
 
 	moco.mode = POSITION_MODE;
 	moco.encoder_offset = 120;
-	moco.arm_offset = 200;
 	moco.angle_cw = (2048/7)/4;
 	moco.angle_ccw = (2048/7)/4*3;
 	moco.phase_offset1 = 0;			// 2048 / 7 / 3 * 0
@@ -53,7 +53,7 @@ void initMotorControl()
 	moco.phase_offset3 = 195;		// 2048 / 7 / 3 * 2
 	moco.power = 0;
 	moco.power_limit = 127;
-	moco.position = moco.arm_offset;
+	moco.position = 0;
 	moco.target = 0;
 	moco.target_rpm = 800;
 	moco.direction = 0;
@@ -61,7 +61,7 @@ void initMotorControl()
 	moco.old_angle = 0;
 	moco.angle_error = 0;
 	moco.Kp = 3.0f;
-	moco.Ki = 0.02f;
+	moco.Ki = 0.015f;
 	moco.Kd = 100.0f;
 	moco.calibration = 0;
 	moco.as5600_i2c_angle[0] = 0;
@@ -74,34 +74,40 @@ void initMotorControl()
 
 void update()
 {
-	HAL_I2C_Mem_Read_IT(&hi2c1, AS5600_I2C_ADDR, AS5600_REG_RAWANGLE, I2C_MEMADD_SIZE_8BIT, (uint8_t*)moco.as5600_i2c_angle, 2);
+	if (newData)
+	{
+		newData = false;
+		if (moco.mode == TORQUE_MODE)
+		{
+			updateTorque();
+		}
+		else if (moco.mode == POSITION_MODE)
+		{
+			updatePosition();
+		}
+		else if (moco.mode == SPEED_MODE)
+		{
+			updateSpeed();
+		}
+	}
+	else
+	{
+		HAL_I2C_Mem_Read_IT(&hi2c1, AS5600_I2C_ADDR, AS5600_REG_RAWANGLE, I2C_MEMADD_SIZE_8BIT, (uint8_t*)moco.as5600_i2c_angle, 2);
+	}
 }
 
 void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *I2cHandle)
 {
 	__HAL_I2C_CLEAR_FLAG(I2cHandle, I2C_FLAG_RXNE);
 	moco.meas_angle = (moco.as5600_i2c_angle[1] + (((uint16_t)moco.as5600_i2c_angle[0] & 0x0F) << 8))/2;
-	//uint16_t angle = as5600_i2c_angle/2;
-
-	if (moco.mode == TORQUE_MODE)
-	{
-		updateTorque();
-	}
-	else if (moco.mode == POSITION_MODE)
-	{
-		updatePosition();
-	}
-	else if (moco.mode == SPEED_MODE)
-	{
-		updateSpeed();
-	}
+	newData = true;
 }
 
 void updatePosition()
 {
 	float proportional;
 	float integral;
-	float differential;
+	static float differential;
 
 	// determine direction and power
 	moco.position_error = (moco.target - moco.position);
@@ -230,23 +236,27 @@ void calibrateOffset(uint8_t calibration_power)
 	uint16_t angle = 0;
 	moco.power = calibration_power;
 
-	while (AS5600_getRawAngle(&hi2c1) > 2048/7)
-	{
-		angle += 5;
-		updatePosition(angle);
-		HAL_Delay(100);
-	}
+	//while (AS5600_getRawAngle(&hi2c1) > 2048/7)
+	//{
+	//	angle += 5;
+	//	updatePosition(angle);
+	//	HAL_Delay(100);
+	//}
+
 	updatePosition(0);
-	HAL_Delay(200);
+	HAL_Delay(1000);
 
 	moco.encoder_offset = 0;
 	for (uint8_t i = 0; i < (1 << 4); i++)
 	{
-		moco.encoder_offset += AS5600_getRawAngle(&hi2c1);
+		HAL_I2C_Mem_Read_IT(&hi2c1, AS5600_I2C_ADDR, AS5600_REG_RAWANGLE, I2C_MEMADD_SIZE_8BIT, (uint8_t*)moco.as5600_i2c_angle, 2);
+		while(newData == false)
+			HAL_Delay(100);
+		moco.encoder_offset += moco.meas_angle;
 	}
 	moco.power = 0;
 	updatePosition(0);
-	moco.encoder_offset = moco.encoder_offset >> 4;
+	moco.encoder_offset = (moco.encoder_offset >> 4) % (2048/7);
 	moco.calibration = 0;
 	//position = encoder_offset;
 	moco.target = 0;
@@ -287,7 +297,16 @@ void setTarget(uint32_t target)
 	moco.target = target;
 }
 
-int32_t getPosition()
+int32_t get_meas_angle()
 {
-	return moco.position;
+	newData = false;
+	HAL_I2C_Mem_Read_IT(&hi2c1, AS5600_I2C_ADDR, AS5600_REG_RAWANGLE, I2C_MEMADD_SIZE_8BIT, (uint8_t*)moco.as5600_i2c_angle, 2);
+	while(newData == false);
+	newData = false;
+	return moco.meas_angle;
+}
+
+void setnewData()
+{
+	newData = true;
 }

@@ -1,2 +1,5 @@
-../Core/Src/application.c:21:6:setup	8	static
-../Core/Src/application.c:42:6:loop	16	static
+../Core/Src/application.c:29:6:setServoSignal	0	static
+../Core/Src/application.c:35:6:setup	8	static
+../Core/Src/application.c:128:6:enableFlywheels	0	static
+../Core/Src/application.c:133:6:disableFlywheels	0	static
+../Core/Src/application.c:57:6:loop	24	static

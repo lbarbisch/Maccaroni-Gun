@@ -19,4 +19,7 @@ extern I2C_HandleTypeDef hi2c1;
 void setup();
 void loop();
 
+void enableFlywheels();
+void disableFlywheels();
+
 #endif /* INC_APPLICATION_H_ */

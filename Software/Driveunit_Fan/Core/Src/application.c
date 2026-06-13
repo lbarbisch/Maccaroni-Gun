@@ -17,19 +17,14 @@ uint8_t stateMachine = 0;
 int32_t targetA = 0;
 int32_t targetB = -600;
 
-#define SERVO_WAIT_MS 400
-#define BLOCK_WAIT_MS 500
+#define SERVO_WAIT_MS  600
+#define BLOCK_WAIT_MS  300
+#define BLOCK_ABORT_MS 300
 
-uint32_t servoWaitStart = 0;
-uint32_t blockWaitStart = 0;
+uint32_t timestamp = 0;
 
-uint8_t rapidFireCount = 1;
+uint8_t rapidFireCount = 5;
 uint8_t fireCount = 0;
-
-void setServoSignal(bool active)
-{
-	// dummy implementation, fill in actual servo control later
-}
 
 
 void setup()
@@ -63,41 +58,48 @@ void loop()
 	if ((oldTriggerState == 1) && (HAL_GPIO_ReadPin(Trigger_GPIO_Port, Trigger_Pin) == 0) && (stateMachine == 0))
 	{
 		stateMachine = 1;
-		disableFlywheels();
-		servoWaitStart = HAL_GetTick();
+		timestamp = HAL_GetTick();
+		enableFlywheels();
 		fireCount = rapidFireCount;
 	}
 
 	// wait period for flywheels to spin up
 	if (stateMachine == 1)
 	{
-		if ((HAL_GetTick() - servoWaitStart) >= SERVO_WAIT_MS)
+		if ((HAL_GetTick() - timestamp) >= SERVO_WAIT_MS)
 		{
 			stateMachine = 2;
+			timestamp = HAL_GetTick();
+			moco.power_limit = 127;		// bump up power
 			moco.target = targetA;
-			blockWaitStart = HAL_GetTick();
 		}
 	}
 
 	// make sure motor is at starting position
 	if (stateMachine == 2)
 	{
-		if ((abs(moco.position - targetA) < 10) || ((HAL_GetTick() - blockWaitStart) >= BLOCK_WAIT_MS))
+		if ((abs(moco.position - targetA) < 10) || ((HAL_GetTick() - timestamp) >= BLOCK_ABORT_MS))
 		{
 			stateMachine = 3;
+			timestamp = HAL_GetTick();
 			moco.target = targetB;
-			blockWaitStart = HAL_GetTick();
 		}
 	}
 
 	// move motor to positionB
 	if (stateMachine == 3)
 	{
-		if ((abs(moco.position - targetB) < 10) || ((HAL_GetTick() - blockWaitStart) >= BLOCK_WAIT_MS))
+		if ((abs(moco.position - targetB) < 10) || ((HAL_GetTick() - timestamp) >= BLOCK_ABORT_MS))
 		{
 
 			moco.target = targetA;
 			fireCount--;
+
+			if ((HAL_GetTick() - timestamp) >= BLOCK_ABORT_MS)
+			{
+				fireCount = 0;	// abort rapid fire when blocked
+			}
+
 			if (fireCount > 0)
 			{
 				// shoot once more
@@ -108,16 +110,19 @@ void loop()
 				// stop shooting
 				stateMachine = 4;
 			}
+			timestamp = HAL_GetTick();
 		}
 	}
 
 	// move motor back and after return disable flywheels
 	if (stateMachine == 4)
 	{
-		if (abs(moco.position - targetA) < 10)
+		if ((abs(moco.position - targetA) < 10) || ((HAL_GetTick() - timestamp) >= BLOCK_ABORT_MS))
 		{
-			enableFlywheels();
+			disableFlywheels();
 			stateMachine = 0;
+			timestamp = HAL_GetTick();
+			moco.power_limit = 32;		// reduce power for only holding position
 		}
 	}
 

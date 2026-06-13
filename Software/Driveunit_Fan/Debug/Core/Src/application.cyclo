@@ -1,5 +1,4 @@
-../Core/Src/application.c:29:6:setServoSignal	1
-../Core/Src/application.c:35:6:setup	5
-../Core/Src/application.c:128:6:enableFlywheels	1
-../Core/Src/application.c:133:6:disableFlywheels	1
-../Core/Src/application.c:57:6:loop	14
+../Core/Src/application.c:30:6:setup	5
+../Core/Src/application.c:133:6:enableFlywheels	1
+../Core/Src/application.c:138:6:disableFlywheels	1
+../Core/Src/application.c:52:6:loop	16
